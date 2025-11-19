@@ -24,11 +24,6 @@ const userSchema = new mongoose.Schema(
     },
     isVerified: { type: Boolean, default: false },
 
-    // email otp verification.
-    emailOTP: { type: String },
-    emailOTPExpiresAt: { type: Date },
-    lastOTPRequestedAt: { type: Date },
-
     // refresh token validation.
     refreshTokenHash: { type: String },
   },
