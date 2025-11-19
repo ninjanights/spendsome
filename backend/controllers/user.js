@@ -7,7 +7,11 @@ import {
   compareHashPassword,
 } from "../utils/bcryptjs.js";
 import { tempUser } from "../utils/tempUser.js";
-import { signAccessToken, signRefreshToken } from "../utils/jwt.js";
+import {
+  signAccessToken,
+  signRefreshToken,
+  verifyRefreshToken,
+} from "../utils/jwt.js";
 
 export const registerUserC = async (req, res) => {
   try {
@@ -208,21 +212,76 @@ export const loginC = async (req, res) => {
     user.refreshToken = refreshToken;
     await user.save();
 
-    return res.status(200).json({
-      success: true,
-      message: "User logged in successfully.",
-      accessToken,
-      refreshToken,
-      user: {
-        id: user._id,
-        email: user.email,
-        username: user.username,
-      },
-    });
+    return res
+      .cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
+      .status(200)
+      .json({
+        success: true,
+        message: "User logged in successfully.",
+        accessToken,
+
+        user: {
+          id: user._id,
+          email: user.email,
+          username: user.username,
+        },
+      });
   } catch (e) {
     console.log(e.message);
     res
       .status(500)
       .json({ message: "Server error while logging in", error: e.message });
+  }
+};
+
+// refresh Token c.
+export const refreshTokenC = async (req, res) => {
+  try {
+    const token = req.cookies.refreshToken;
+
+    if (!token)
+      return res.status(401).json({
+        message: "No refresh token! login again or wave the developer.",
+      });
+
+    const decoded = verifyRefreshToken(token);
+
+    // find user
+    const user = await User.findById(decoded.sub);
+    if (!user || user.refreshToken !== token) {
+      return res.status(403).json({
+        message: "Invalid refresh token.",
+      });
+    }
+
+    const newAccessT = signAccessToken(decoded.sub);
+
+    // generate jti for refresh token.
+    const jti = crypto.randomUUID();
+    const newRefreshT = signRefreshToken(decoded.sub, jti);
+
+    user.refreshToken = newRefreshT;
+    await user.save();
+
+    res.cookie("refreshToken", newRefreshT, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: false,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.json({
+      success: true,
+      accessToken: newAccessT,
+    });
+  } catch (e) {
+    return res
+      .status(401)
+      .json({ message: e.message || "Invalid refresh token" });
   }
 };

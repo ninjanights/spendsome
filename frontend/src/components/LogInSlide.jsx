@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { useRegister } from "../contexts/RegisterContext.jsx";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../store/authSlice.js";
 
 function LogInSlide() {
   const [password, setPassword] = useState("");
   const { handleLogin } = useRegister();
+
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
@@ -13,6 +17,13 @@ function LogInSlide() {
     e.preventDefault();
     const res = await handleLogin(password);
     if (res?.success) {
+      console.log(res.data.user, "🍁");
+      dispatch(
+        setCredentials({
+          accessToken: res.data.accessToken,
+          user: res.data.user,
+        })
+      );
       navigate("/home");
     }
   };

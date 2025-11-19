@@ -1,5 +1,10 @@
 import express from "express";
-import { loginC, registerUserC, verifyOtpC } from "../controllers/user.js";
+import {
+  loginC,
+  refreshTokenC,
+  registerUserC,
+  verifyOtpC,
+} from "../controllers/user.js";
 
 const router = express.Router();
 
@@ -11,5 +16,8 @@ router.post("/verifyotp", verifyOtpC);
 
 // login user.
 router.post("/login", loginC);
+
+// refresh token access.
+router.get("/refrehtoken", refreshTokenC);
 
 export default router;
