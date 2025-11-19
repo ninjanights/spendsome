@@ -1,5 +1,5 @@
 import { createContext, useState, useContext } from "react";
-import { signupH, verifyOtpH } from "../services/register.js";
+import { signupH, verifyOtpH, loginH } from "../services/register.js";
 
 import useTimer from "../services/useTimer.js";
 
@@ -45,15 +45,20 @@ export const RegisterProvider = ({ children }) => {
   // handle resend otp.
   const handleResendOtp = async () => {
     if (time > 0) return;
-
-    await resendOtpH(form?.email);
+    await signupH(form);
     reset();
   };
 
   // handle log in.
-  const handleLogin = async (password) => {
+  const handleLogin = async (pass) => {
+    const res = await loginH(form.email, pass);
+    return res;
+  };
 
-  
+  // handle log (in seperate)
+  const handleLoginSeperate = async (email, pass) => {
+    const res = await loginH(email, pass);
+    return res;
   };
 
   return (
@@ -70,6 +75,7 @@ export const RegisterProvider = ({ children }) => {
         handleVerifyOtp,
         handleResendOtp,
         handleLogin,
+        handleLoginSeperate,
         setStep,
       }}
     >

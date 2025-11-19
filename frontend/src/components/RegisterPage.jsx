@@ -9,8 +9,6 @@ import { useRegister } from "../contexts/RegisterContext.jsx";
 function RegisterPage() {
   const { step } = useRegister();
 
-
-
   return (
     <div>
       <p>Register.</p>

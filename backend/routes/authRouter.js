@@ -1,5 +1,5 @@
 import express from "express";
-import { registerUserC, verifyOtpC } from "../controllers/user.js";
+import { loginC, registerUserC, verifyOtpC } from "../controllers/user.js";
 
 const router = express.Router();
 
@@ -9,7 +9,7 @@ router.post("/register", registerUserC);
 // verify otp.
 router.post("/verifyotp", verifyOtpC);
 
-// // login user.
-// router.post("/login");
+// login user.
+router.post("/login", loginC);
 
 export default router;

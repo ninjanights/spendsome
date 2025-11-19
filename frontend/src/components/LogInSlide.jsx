@@ -12,8 +12,8 @@ function LogInSlide() {
   const handleLoginHere = async (e) => {
     e.preventDefault();
     const res = await handleLogin(password);
-    if (res.success) {
-      navigate("home");
+    if (res?.success) {
+      navigate("/home");
     }
   };
 
@@ -26,7 +26,7 @@ function LogInSlide() {
         placeholder="Password"
         type="password"
       ></input>
-      <button onClick={(e) => handleLoginHere(e)}></button>
+      <button onClick={(e) => handleLoginHere(e)}>Log in</button>
     </div>
   );
 }

@@ -7,7 +7,7 @@ export const generateToken = (payload, secret, expiresIn) => {
 
 // (gen) access token.
 export const signAccessToken = (userId) => {
-  return generateToken({ sub: userId }, process.env.JWT_ACCESS_TOKEN, "15m");
+  return generateToken({ sub: userId }, process.env.JWT_ACCESS_SECRET, "15m");
 };
 
 // (gen) refresh token.
@@ -21,10 +21,10 @@ export const signRefreshToken = (userId, jti) => {
 
 // verify access token.
 export const verifyAccesstToken = (token) => {
-  return jwt.verify(token, process.env.JWT_ACCESS_TOKEN);
+  return jwt.verify(token, process.env.JWT_ACCESS_SECRET);
 };
 
 // verify refresh token.
 export const verifyRefreshToken = (token) => {
-  return jwt.verify(token, process.env.JWT_REFRESH_TOKEN);
+  return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
 };

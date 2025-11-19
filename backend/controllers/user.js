@@ -1,7 +1,13 @@
 import User from "../models/user.js";
+import crypto from "crypto";
 import { sendEmailOtp } from "../services/emailServices.js";
-import { generateOtp, hashPassword } from "../utils/bcryptjs.js";
+import {
+  generateOtp,
+  hashPassword,
+  compareHashPassword,
+} from "../utils/bcryptjs.js";
 import { tempUser } from "../utils/tempUser.js";
+import { signAccessToken, signRefreshToken } from "../utils/jwt.js";
 
 export const registerUserC = async (req, res) => {
   try {
@@ -42,7 +48,6 @@ export const registerUserC = async (req, res) => {
     }
 
     const alreadyUser = await User.findOne({ email });
-    console.log(alreadyUser, "🎏");
 
     if (alreadyUser) {
       return res.status(200).json({
@@ -149,5 +154,75 @@ export const verifyOtpC = async (req, res) => {
     res
       .status(500)
       .json({ message: "Server error while verifing otp.", error: e.message });
+  }
+};
+
+// log in.
+export const loginC = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and password required.",
+      });
+    }
+
+    // check if user is present.
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password.",
+      });
+    }
+
+    // is verified.
+    if (!user.isVerified) {
+      return res.status(403).json({
+        success: false,
+        message: "Email not verified. Verify before login.",
+        isVerified: false,
+      });
+    }
+
+    // check password correct?
+    const isMatch = await compareHashPassword(password, user.passwordHash);
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid Pass.",
+      });
+    }
+
+    // generate jti for refresh token.
+    const jti = crypto.randomUUID();
+
+    // generate token.
+    const accessToken = signAccessToken(user._id.toString());
+    const refreshToken = signRefreshToken(user._id.toString(), jti);
+
+    // save refresh token to db.
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "User logged in successfully.",
+      accessToken,
+      refreshToken,
+      user: {
+        id: user._id,
+        email: user.email,
+        username: user.username,
+      },
+    });
+  } catch (e) {
+    console.log(e.message);
+    res
+      .status(500)
+      .json({ message: "Server error while logging in", error: e.message });
   }
 };
