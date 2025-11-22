@@ -1,4 +1,9 @@
-import { loginApi, signupUserApi, verifyOtpApi, logoutApi } from "../axios/axios.js";
+import {
+  loginApi,
+  signupUserApi,
+  verifyOtpApi,
+  logoutApi,
+} from "../axios/axios.js";
 
 // post, signup helper.
 export const signupH = async (form) => {
@@ -48,7 +53,6 @@ export const loginH = async (email, password) => {
         message: "You're not sending any email or password.",
       };
     }
-    console.log(email, password, "📭");
 
     const res = await loginApi({ email: email, password: password });
     return {
@@ -69,8 +73,7 @@ export const loginH = async (email, password) => {
 export const logoutH = async () => {
   try {
     const res = await logoutApi();
-    console.log(res, " 🥬logout res");
-    return res
+    return res;
   } catch (e) {
     console.log("Logout error.", e.message);
     return {

@@ -14,7 +14,7 @@ import NavBar from "./components/NavBar.jsx";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthFromLStorage, logout } from "./store/authSlice.js";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 
 function App() {
   const dispatch = useDispatch();
@@ -23,8 +23,8 @@ function App() {
 
   useEffect(() => {
     const auth = JSON.parse(localStorage.getItem("auth"));
-    if (!auth){
-      dispatch(logout())
+    if (!auth) {
+      dispatch(logout());
     }
     try {
       dispatch(
@@ -39,7 +39,8 @@ function App() {
   }, [dispatch]);
 
   return (
-    <div className="min-h-screen bg-gray-500">
+    <div className="min-h-screen items-center justify-center 
+    bg-neutral-300 dark:bg-neutral-800 text-neutral-200">
       <Router>
         <NavBar />
         <Routes>
