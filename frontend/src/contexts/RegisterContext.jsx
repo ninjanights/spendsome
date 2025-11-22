@@ -1,11 +1,11 @@
 import { createContext, useState, useContext } from "react";
-import { signupH, verifyOtpH, loginH } from "../services/register.js";
+import { signupH, verifyOtpH, loginH, logoutH } from "../services/register.js";
 
 import useTimer from "../services/useTimer.js";
 
 export const RegisterContext = createContext();
 
-export const RegisterProvider = ({ children }) => {
+const RegisterProvider = ({ children }) => {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [message, setMessage] = useState("");
   const [step, setStep] = useState("signuppage");
@@ -61,6 +61,12 @@ export const RegisterProvider = ({ children }) => {
     return res;
   };
 
+  // handle Log out.
+  const handleLogOut = async () => {
+    const res = await logoutH();
+    return res;
+  };
+
   return (
     <RegisterContext.Provider
       value={{
@@ -77,6 +83,7 @@ export const RegisterProvider = ({ children }) => {
         handleLogin,
         handleLoginSeperate,
         setStep,
+        handleLogOut,
       }}
     >
       {children}
@@ -85,3 +92,6 @@ export const RegisterProvider = ({ children }) => {
 };
 
 export const useRegister = () => useContext(RegisterContext);
+
+// Default export for the provider
+export default RegisterProvider;

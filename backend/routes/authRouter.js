@@ -1,10 +1,11 @@
 import express from "express";
 import {
   loginC,
-  refreshTokenC,
+  logoutC,
   registerUserC,
   verifyOtpC,
 } from "../controllers/user.js";
+import { authMiddleware } from "../middlewares/auth.js";
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ router.post("/verifyotp", verifyOtpC);
 // login user.
 router.post("/login", loginC);
 
-// refresh token access.
-router.get("/refrehtoken", refreshTokenC);
+// log out.
+router.get("/logout", logoutC);
 
 export default router;

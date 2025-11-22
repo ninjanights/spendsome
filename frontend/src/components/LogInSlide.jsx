@@ -17,13 +17,17 @@ function LogInSlide() {
     e.preventDefault();
     const res = await handleLogin(password);
     if (res?.success) {
-      console.log(res.data.user, "🍁");
+      localStorage.setItem(
+        "auth",
+        JSON.stringify({ token: res.data.token, user: res.data.user })
+      );
       dispatch(
         setCredentials({
-          accessToken: res.data.accessToken,
           user: res.data.user,
+          isAuthenticated: true,
         })
       );
+
       navigate("/home");
     }
   };

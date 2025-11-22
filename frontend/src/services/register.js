@@ -1,4 +1,4 @@
-import { loginApi, signupUserApi, verifyOtpApi } from "../axios/axios.js";
+import { loginApi, signupUserApi, verifyOtpApi, logoutApi } from "../axios/axios.js";
 
 // post, signup helper.
 export const signupH = async (form) => {
@@ -58,6 +58,21 @@ export const loginH = async (email, password) => {
     };
   } catch (e) {
     console.log("Login error from helper.", e.message);
+    return {
+      success: false,
+      message: e.response?.data?.message || e.message,
+    };
+  }
+};
+
+// log out h.
+export const logoutH = async () => {
+  try {
+    const res = await logoutApi();
+    console.log(res, " 🥬logout res");
+    return res
+  } catch (e) {
+    console.log("Logout error.", e.message);
     return {
       success: false,
       message: e.response?.data?.message || e.message,

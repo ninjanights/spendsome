@@ -2,8 +2,12 @@ import React, { useState } from "react";
 
 import { useRegister } from "../contexts/RegisterContext.jsx";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../store/authSlice.js";
 
 function Login() {
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
   const { handleLoginSeperate } = useRegister();
 
@@ -16,6 +20,16 @@ function Login() {
     if (!emailInp || !passwordInp) return;
     const res = await handleLoginSeperate(emailInp, passwordInp);
     if (res?.success) {
+      localStorage.setItem(
+        "auth",
+        JSON.stringify({ token: res.data.token, user: res.data.user })
+      );
+      dispatch(
+        setCredentials({
+          user: res.data.user,
+          isAuthenticated: true,
+        })
+      );
       navigate("/home");
     }
   };

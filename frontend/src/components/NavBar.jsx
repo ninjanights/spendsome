@@ -1,12 +1,26 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import { useNavigate, NavLink } from "react-router-dom";
+import { logout } from "../store/authSlice.js";
+import { useRegister } from "../contexts/RegisterContext.jsx";
 
 function NavBar() {
   const navigate = useNavigate();
+  const { handleLogOut } = useRegister();
+  const isLoggedIn = useSelector((state) => state.auth.isAuthenticated);
+  const dispatch = useDispatch();
+
+  const handleLogOutHere = async () => {
+    const res = await handleLogOut();
+    if (res?.data?.success) {
+      dispatch(logout());
+      navigate("/home");
+    }
+  };
 
   return (
-    <div>
+    <div className="flex bg-gray-500">
       <ul>
         <li>
           <NavLink
@@ -58,7 +72,7 @@ function NavBar() {
       </ul>
 
       <ul>
-        {!activeUser ? (
+        {!isLoggedIn ? (
           <ul>
             <li>
               <NavLink
@@ -86,15 +100,14 @@ function NavBar() {
         ) : (
           <ul>
             <li>
-              <NavLink
-                to="/login"
-                end
-                className={({ isActive }) => {
-                  isActive ? "activeNavLink" : "";
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleLogOutHere();
                 }}
               >
                 Log out
-              </NavLink>
+              </button>
             </li>
           </ul>
         )}
