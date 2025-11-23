@@ -31,7 +31,7 @@ function App() {
         setAuthFromLStorage({
           user: auth.user,
           isAuthenticated: auth?.token ? true : false,
-        })
+        }),
       );
     } catch (e) {
       dispatch(logout());
@@ -39,8 +39,7 @@ function App() {
   }, [dispatch]);
 
   return (
-    <div className="min-h-screen items-center justify-center 
-    bg-neutral-300 dark:bg-neutral-800 text-neutral-200">
+    <div className="min-h-screen items-center justify-center bg-neutral-300 text-neutral-900 dark:bg-neutral-800 dark:text-neutral-300">
       <Router>
         <NavBar />
         <Routes>

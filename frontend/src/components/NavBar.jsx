@@ -12,6 +12,7 @@ function NavBar() {
   const { handleLogOut } = useRegister();
   const isLoggedIn = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
+  const usernameG = useSelector((state) => state.auth.user?.username);
 
   const handleLogOutHere = async () => {
     const res = await handleLogOut();
@@ -22,31 +23,27 @@ function NavBar() {
   };
 
   return (
-    <div
-      className="w-full bg-neutral-300 dark:bg-neutral-800 text-neutral-900 gap-2
-     dark:text-neutral-300 px-6 py-3 flex justify-between items-center text-[10px]
-     text-center md:text-small"
-    >
+    <div className="md:text-small flex w-full items-center justify-between gap-2 bg-neutral-300 px-6 py-3 text-center text-[10px] text-neutral-900 dark:bg-neutral-800 dark:text-neutral-300">
       <ul className="flex">
         <li>
           <NavLink
             to="/home"
             end
-            className={({ isActive }) => `
-                ${isActive ? "text-yellow-500" : ""}`}
+            className={({ isActive }) => ` ${isActive ? "text-blue-900" : ""}`}
           >
             Spend some.
           </NavLink>
         </li>
       </ul>
 
-      <ul className="flex gap-2 md:gap-4 font-bold">
+      <ul className="flex gap-2 font-bold md:gap-4">
         <li>
           <NavLink
             to="/home"
             end
-            className={({ isActive }) => `
-                ${isActive ? "text-yellow-500 font-black" : ""}`}
+            className={({ isActive }) =>
+              ` ${isActive ? "font-black text-blue-900" : ""}`
+            }
           >
             Home
           </NavLink>
@@ -55,8 +52,9 @@ function NavBar() {
           <NavLink
             to="/dashboard"
             end
-            className={({ isActive }) => `
-                ${isActive ? "text-yellow-500 font-black" : ""}`}
+            className={({ isActive }) =>
+              ` ${isActive ? "font-black text-blue-900" : ""}`
+            }
           >
             Dashboard
           </NavLink>
@@ -65,8 +63,9 @@ function NavBar() {
           <NavLink
             to="/events"
             end
-            className={({ isActive }) => `
-                ${isActive ? "text-yellow-500 font-black" : ""}`}
+            className={({ isActive }) =>
+              ` ${isActive ? "font-black text-blue-900" : ""}`
+            }
           >
             Events
           </NavLink>
@@ -79,41 +78,45 @@ function NavBar() {
           >
             <img
               onClick={toggleTheme}
-              className="w-4 h-4 block"
+              className="block h-4 w-4"
               src={theme === "dark" ? "/sunyes.svg" : "/moonyes.svg"}
             ></img>
           </button>
         </li>
       </ul>
 
-      <ul className="flex gap-2">
+      <ul className="flex items-center justify-center gap-2 align-middle">
         {!isLoggedIn ? (
-          <ul className="flex gap-1 md:gap-4">
-            <li>
+          <ul className="flex items-center justify-center gap-2 align-middle">
+            <li className="font-bold">
               <NavLink
                 to="/register"
                 end
-                className={({ isActive }) => `
-                ${isActive ? " text-yellow-500" : ""}`}
+                className={({ isActive }) =>
+                  ` ${isActive ? " text-blue-900" : ""}`
+                }
               >
                 Sign up
               </NavLink>
             </li>
-            <li>
+            <li className="font-bold">
               <NavLink
                 to="/login"
                 end
-                className={({ isActive }) => `
-                ${isActive ? "text-yellow-500 " : ""}`}
+                className={({ isActive }) =>
+                  ` ${isActive ? "text-blue-900" : ""}`
+                }
               >
                 Log in
               </NavLink>
             </li>
           </ul>
         ) : (
-          <ul>
+          <ul className="flex items-center justify-center gap-2 align-middle">
+            <li className="text-sm text-neutral-500">{`@${usernameG}`}</li>
             <li>
               <button
+                className="m-0 cursor-pointer rounded border-none bg-blue-900 p-0 px-3 py-2 font-bold text-neutral-300 outline-none hover:bg-blue-800 focus:outline-none"
                 onClick={(e) => {
                   e.preventDefault();
                   handleLogOutHere();

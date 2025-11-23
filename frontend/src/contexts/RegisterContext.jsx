@@ -3,9 +3,9 @@ import { signupH, verifyOtpH, loginH, logoutH } from "../services/register.js";
 
 import useTimer from "../services/useTimer.js";
 
-export const RegisterContext = createContext();
+export const registerContext = createContext();
 
-const RegisterProvider = ({ children }) => {
+export const RegisterProvider = ({ children }) => {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [message, setMessage] = useState("");
   const [step, setStep] = useState("signuppage");
@@ -24,11 +24,13 @@ const RegisterProvider = ({ children }) => {
   // handle signup.
   const handleSignup = async () => {
     const res = await signupH(form);
+    console.log(res, "llll");
     setMessage(res?.data?.message);
-    if (res.data.success) {
+    if (res?.data?.success) {
       start();
       setStep("otppage");
     }
+    return res;
   };
 
   // handle Verify Otp
@@ -68,7 +70,7 @@ const RegisterProvider = ({ children }) => {
   };
 
   return (
-    <RegisterContext.Provider
+    <registerContext.Provider
       value={{
         form,
         step,
@@ -87,11 +89,8 @@ const RegisterProvider = ({ children }) => {
       }}
     >
       {children}
-    </RegisterContext.Provider>
+    </registerContext.Provider>
   );
 };
 
-export const useRegister = () => useContext(RegisterContext);
-
-// Default export for the provider
-export default RegisterProvider;
+export const useRegister = () => useContext(registerContext);

@@ -1,5 +1,5 @@
 import User from "../models/user.js";
-import crypto from "crypto";
+import { checkEmailDomain } from "../utils/checkEmail.js";
 import { sendEmailOtp } from "../services/emailServices.js";
 import {
   generateOtp,
@@ -12,6 +12,22 @@ import { signAccessToken } from "../utils/jwt.js";
 export const registerUserC = async (req, res) => {
   try {
     const { username, email, password } = req.body;
+
+    if (!(await checkEmailDomain(email))) {
+      return res.status(400).json({
+        success: false,
+        message: "This email address is not valid or cannot receive mail.",
+      });
+    }
+
+    const alreadyUser = await User.findOne({ email });
+    if (alreadyUser) {
+      return res.status(200).json({
+        success: false,
+        message: "Email is already registered.",
+        isAlreadyUser: alreadyUser._id,
+      });
+    }
 
     if (tempUser[email]) {
       const user = tempUser[email];
@@ -44,16 +60,6 @@ export const registerUserC = async (req, res) => {
         success: true,
         message: "OTP expired earlier. New OTP sent.",
         emailOTPExpiresAt: newExp,
-      });
-    }
-
-    const alreadyUser = await User.findOne({ email });
-
-    if (alreadyUser) {
-      return res.status(200).json({
-        success: false,
-        message: "Email is already registered in db.",
-        isAlreadyUser: alreadyUser._id,
       });
     }
 
