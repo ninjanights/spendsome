@@ -10,7 +10,6 @@ export const signupH = async (form) => {
   try {
     const { username, email, password } = form;
 
-    console.log(username, email, "kkkkk");
     if (!username || !email || !password) {
       return { success: false, message: "Some credentials are invalid." };
     }

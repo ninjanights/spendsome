@@ -22,7 +22,7 @@ app.use(express.json());
 
 // routes
 app.use("/api/auth", authRouter);
-app.use("/api/expenses", expenseRouter);
+app.use("/api/expense", expenseRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

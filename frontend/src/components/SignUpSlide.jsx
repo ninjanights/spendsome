@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useRegister } from "../contexts/RegisterContext.jsx";
-import { useNavigate } from "react-router-dom";
 
 import * as Yup from "yup";
 

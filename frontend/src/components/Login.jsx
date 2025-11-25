@@ -130,6 +130,15 @@ function Login() {
       >
         Log in
       </button>
+      <p className="flex items-baseline justify-center gap-2 align-baseline text-[12px]">
+        Don't have an account?
+        <span
+          className="cursor-pointer font-bold text-neutral-500 underline"
+          onClick={() => navigate("/register")}
+        >
+          Sign up
+        </span>
+      </p>
     </div>
   );
 }
